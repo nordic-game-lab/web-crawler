@@ -1,5 +1,5 @@
 {
-  "name": "nodejs",
+  "name": "@nordic-game-lab/web-crawler",
   "version": "1.0.0",
   "description": "",
   "main": "crawler.js",
@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Nordic Game Lab LLC",
+  "license": "mit",
   "dependencies": {
     "@types/node": "^18.0.6",
     "axios": "^1.6.7",
