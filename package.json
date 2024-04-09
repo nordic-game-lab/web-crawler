@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nordic-game-lab/web-crawler.git"
+  },
   "keywords": [],
   "author": "Nordic Game Lab LLC",
   "license": "mit",
