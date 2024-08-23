@@ -1,6 +1,6 @@
 {
   "name": "@nordic-game-lab/web-crawler",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "crawler.js",
   "scripts": {
@@ -17,7 +17,7 @@
   "author": "Nordic Game Lab LLC",
   "license": "mit",
   "dependencies": {
-    "@types/node": "^18.0.6",
+    "@types/node": "^20.0.0",
     "axios": "^1.6.7",
     "cheerio": "^1.0.0-rc.12",
     "robots-parser": "^3.0.1",
