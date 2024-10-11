@@ -8,6 +8,9 @@ const { URL } = require('url');
 const RobotsParser = require('robots-parser');
 const puppeteer = require('puppeteer');
 
+const {RUNNING_IN_DOCKER} = process.env;
+const puppeteerArgs = RUNNING_IN_DOCKER ? ['--no-sandbox', '--disable-setuid-sandbox'] : [];
+
 let crawledUrls = [];
 let pageData = [];
 
@@ -15,7 +18,7 @@ async function crawl(toCrawlUrl, urlInclude, noCrawl) {
   let toCrawlUrls = [
     toCrawlUrl
   ];
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({args: puppeteerArgs});
   const page = await browser.newPage();
   await page.setExtraHTTPHeaders({"From": "bots(at)nordicgamelab.org"})
     while (toCrawlUrls.length > 0) {
