@@ -6,6 +6,7 @@ const path = require('path');
 const yargs = require('yargs');
 const { URL } = require('url');
 const RobotsParser = require('robots-parser');
+const puppeteer = require('puppeteer');
 
 let crawledUrls = [];
 let pageData = [];
@@ -14,18 +15,25 @@ async function crawl(toCrawlUrl, urlInclude, noCrawl) {
   let toCrawlUrls = [
     toCrawlUrl
   ];
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.setExtraHTTPHeaders({"From": "bots(at)nordicgamelab.org"})
     while (toCrawlUrls.length > 0) {
         const url = toCrawlUrls.pop();
         crawledUrls.push(url);
 
-      const userAgentToken = 'Mozilla/5.0 (compatible; NordicGameLabBot/1.0; +https://nordicgamelab.org/)';
-      
-      const robotsTxtUrl = new URL('/robots.txt', url);
+      const userAgentToken = 'Mozilla/5.0 (compatible; NordicGameLabBot/1.0; +https://docs.nordicgamelab.org/projects/nordic-game-lab-bot/)';
+      var pathArray = url.split( '/' );
+      var baseurl = pathArray[0] + '//' + pathArray[2];
+
+      const robotsTxtUrl = new URL('/robots.txt', baseurl);
       const robotsTxtResponse = await axios.get(robotsTxtUrl)
 
       // Parse the robots.txt content (you can use a library like 'robots-parser')
       const robotsTxtContent = robotsTxtResponse.data;
       const robotsParser = new RobotsParser(robotsTxtContent);
+
+      await page.setUserAgent(userAgentToken);
       
 
 
@@ -36,12 +44,9 @@ async function crawl(toCrawlUrl, urlInclude, noCrawl) {
         // Exclude URLs that include cdn-cgi
         if (robotsParser.isAllowed(userAgentToken, url)) {
             try {
-                const response = await axios.get(url, {
-                    headers: {
-                        'User-Agent': userAgentToken
-                    }
-                });
-                const $ = cheerio.load(response.data);
+                await page.goto(url, { waitUntil: 'domcontentloaded' });
+                const content = await page.content();
+                const $ = cheerio.load(content);
                 $('a').each((index, element) => {
                     let href = $(element).attr('href');
                     if (href && !containsValueFromArray(href, noCrawl)) {
@@ -77,6 +82,7 @@ async function crawl(toCrawlUrl, urlInclude, noCrawl) {
           console.log(`URL blocked by robots.txt: ${url}`);
         }
     }
+    await browser.close();
     return pageData;
   
 }
